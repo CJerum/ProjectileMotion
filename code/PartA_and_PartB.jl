@@ -26,6 +26,7 @@ largest_optimal_timestep = dt_values[findlast(x -> x <= threshold, ∂err∂t)]
 largest_optimal_index = findfirst(==(largest_optimal_timestep), dt_values)
 
 println("Completed simulation with dt = $(dts[largest_optimal_index]) s, max error = $(errors[largest_optimal_index]) m")
+println("Impact point: x = $(result.impact_point) m")
 
 # --- plotting ---
 plot(dt_values, errors,

@@ -1,5 +1,6 @@
 include("ProjectileMotion.jl")
 using .ProjectileMotion
+using .ProjectileMotion: m, g
 using Plots
 using LaTeXStrings
 using LinearAlgebra
@@ -9,6 +10,7 @@ struct Results
     comptime::Float64
     error_times_comptime::Float64
     dt::Float64
+    impact_point::Float64 # x-coordinate of impact point
 
     function Results(dt, γ = 0.0, θ₀ = 60.0)
         # create state instance
@@ -23,8 +25,9 @@ struct Results
         computation_time = end_time - start_time                # calculate computation-time in seconds
         error = get_error(r_analytical, r_numerical)            # calculate error
         error_times_comptime = error * computation_time       # calculate error-computation time product
+        impact_point = get_impact_point(r_analytical)  # x-coordinate of impact point
 
-        new(error, computation_time, error_times_comptime,dt)
+        new(error, computation_time, error_times_comptime,dt, impact_point)
     end
 end
 
@@ -44,7 +47,7 @@ function get_impact_point(r_numerical)
         # given a slope and the impact idxs, we write our equation in the form y = m(x-x0)
         # solving for x when y=0: x0 = x-(y/m)
         slope = (y_positions[impact_idx] - y_positions[impact_idx-1])/(x_positions[impact_idx] - x_positions[impact_idx-1])
-        x_impact_position = x_positions[impact_idx] - y_positions[impact_idx]
+        x_impact_position = x_positions[impact_idx] - y_positions[impact_idx]/slope
             return x_impact_position
     end
 end
